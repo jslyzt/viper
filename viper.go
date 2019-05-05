@@ -256,7 +256,7 @@ var SupportedRemoteProviders = []string{"etcd", "consul"}
 
 // OnConfigChange change config
 func OnConfigChange(run func(in fsnotify.Event)) {
-	 v.OnConfigChange(run) 
+	v.OnConfigChange(run)
 }
 
 // OnConfigChange change config
@@ -266,7 +266,7 @@ func (v *Viper) OnConfigChange(run func(in fsnotify.Event)) {
 
 // WatchConfig watch
 func WatchConfig() {
-	 v.WatchConfig() 
+	v.WatchConfig()
 }
 
 // WatchConfig watch
@@ -341,7 +341,7 @@ func (v *Viper) WatchConfig() {
 // SetConfigFile explicitly defines the path, name and extension of the config file.
 // Viper will use this and not check any of the config paths.
 func SetConfigFile(in string) {
-	 v.SetConfigFile(in) 
+	v.SetConfigFile(in)
 }
 
 // SetConfigFile explicitly defines the path, name and extension of the config file.
@@ -355,7 +355,7 @@ func (v *Viper) SetConfigFile(in string) {
 // E.g. if your prefix is "spf", the env registry will look for env
 // variables that start with "SPF_".
 func SetEnvPrefix(in string) {
-	 v.SetEnvPrefix(in) 
+	v.SetEnvPrefix(in)
 }
 
 // SetEnvPrefix defines a prefix that ENVIRONMENT variables will use.
@@ -376,7 +376,7 @@ func (v *Viper) mergeWithEnvPrefix(in string) string {
 // but empty environment variables as valid values instead of falling back.
 // For backward compatibility reasons this is false by default.
 func AllowEmptyEnv(allowEmptyEnv bool) {
-	 v.AllowEmptyEnv(allowEmptyEnv)
+	v.AllowEmptyEnv(allowEmptyEnv)
 }
 
 // AllowEmptyEnv tells Viper to consider set,
@@ -402,7 +402,7 @@ func (v *Viper) getEnv(key string) (string, bool) {
 }
 
 // ConfigFileUsed returns the file used to populate the config registry.
-func ConfigFileUsed() string            {
+func ConfigFileUsed() string {
 	return v.ConfigFileUsed()
 }
 
@@ -683,7 +683,7 @@ func GetViper() *Viper {
 //
 // Get returns an interface. For a specific value use one of the Get methods.
 func Get(key string) interface{} {
-	 return v.Get(key)
+	return v.Get(key)
 }
 
 // Get returns an interface. For a specific value use one of the Get methods.
@@ -785,7 +785,7 @@ func (v *Viper) GetInt(key string) int {
 
 // GetInt32 returns the value associated with the key as an integer.
 func GetInt32(key string) int32 {
-	 return v.GetInt32(key) 
+	return v.GetInt32(key)
 }
 
 // GetInt32 returns the value associated with the key as an integer.
@@ -795,7 +795,7 @@ func (v *Viper) GetInt32(key string) int32 {
 
 // GetInt64 returns the value associated with the key as an integer.
 func GetInt64(key string) int64 {
-	 return v.GetInt64(key) 
+	return v.GetInt64(key)
 }
 
 // GetInt64 returns the value associated with the key as an integer.
@@ -1486,7 +1486,20 @@ func (v *Viper) SafeWriteConfigAs(filename string) error {
 	return v.writeConfig(filename, false)
 }
 
-func writeConfig(filename string, force bool) error { return v.writeConfig(filename, force) }
+// Join join viper
+func Join(f *Viper) *Viper {
+	return v.Join(f)
+}
+
+// Join join viper
+func (v *Viper)Join(f *Viper) *Viper {
+	return v
+}
+
+func writeConfig(filename string, force bool) error {
+	return v.writeConfig(filename, force)
+}
+
 func (v *Viper) writeConfig(filename string, force bool) error {
 	jww.INFO.Println("Attempting to write configuration to file.")
 	ext := filepath.Ext(filename)
@@ -1517,8 +1530,7 @@ func (v *Viper) writeConfig(filename string, force bool) error {
 	return v.marshalWriter(f, configType)
 }
 
-// Unmarshal a Reader into a map.
-// Should probably be an unexported function.
+// Unmarshal a Reader into a map. should probably be an unexported function.
 func unmarshalReader(in io.Reader, c map[string]interface{}) error {
 	return v.unmarshalReader(in, c)
 }

@@ -32,7 +32,6 @@ func toCaseInsensitiveValue(value interface{}) interface{} {
 	case map[string]interface{}:
 		value = copyAndInsensitiviseMap(v)
 	}
-
 	return value
 }
 
@@ -52,7 +51,6 @@ func copyAndInsensitiviseMap(m map[string]interface{}) map[string]interface{} {
 			nm[lkey] = v
 		}
 	}
-
 	return nm
 }
 
