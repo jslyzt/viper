@@ -1,9 +1,3 @@
-// Copyright © 2015 Steve Francia <spf@spf13.com>.
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file.
-
-// Package remote integrates the remote features of Viper.
 package remote
 
 import (
@@ -11,7 +5,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/spf13/viper"
+	"github.com/jslyzt/viper"
 	crypt "github.com/xordataexchange/crypt/config"
 )
 
