@@ -1492,7 +1492,7 @@ func Join(f *Viper) *Viper {
 }
 
 // Join join viper
-func (v *Viper)Join(f *Viper) *Viper {
+func (v *Viper) Join(f *Viper) *Viper {
 	return v
 }
 
@@ -1504,7 +1504,7 @@ func (v *Viper) writeConfig(filename string, force bool) error {
 	jww.INFO.Println("Attempting to write configuration to file.")
 	ext := filepath.Ext(filename)
 	if len(ext) <= 1 {
-		return fmt.Errorf("Filename: %s requires valid extension.", filename)
+		return fmt.Errorf("Filename: %s requires valid extension", filename)
 	}
 	configType := ext[1:]
 	if !stringInSlice(configType, SupportedExts) {
@@ -1520,7 +1520,7 @@ func (v *Viper) writeConfig(filename string, force bool) error {
 		if _, err := os.Stat(filename); os.IsNotExist(err) {
 			flags = os.O_WRONLY
 		} else {
-			return fmt.Errorf("File: %s exists. Use WriteConfig to overwrite.", filename)
+			return fmt.Errorf("File: %s exists. Use WriteConfig to overwrite", filename)
 		}
 	}
 	f, err := v.fs.OpenFile(filename, flags, v.configPermissions)
@@ -1714,24 +1714,26 @@ func mergeMaps(
 
 		svType := reflect.TypeOf(sv)
 		tvType := reflect.TypeOf(tv)
-		if svType != tvType {
-			jww.ERROR.Printf(
-				"svType != tvType; key=%s, st=%v, tt=%v, sv=%v, tv=%v",
-				sk, svType, tvType, sv, tv)
-			continue
-		}
 
 		jww.TRACE.Printf("processing key=%s, st=%v, tt=%v, sv=%v, tv=%v",
 			sk, svType, tvType, sv, tv)
 
 		switch ttv := tv.(type) {
 		case map[interface{}]interface{}:
+			if svType != tvType {
+				jww.ERROR.Printf("svType != tvType; key=%s, st=%v, tt=%v, sv=%v, tv=%v", sk, svType, tvType, sv, tv)
+				continue
+			}
 			jww.TRACE.Printf("merging maps (must convert)")
 			tsv := sv.(map[interface{}]interface{})
 			ssv := castToMapStringInterface(tsv)
 			stv := castToMapStringInterface(ttv)
 			mergeMaps(ssv, stv, ttv)
 		case map[string]interface{}:
+			if svType != tvType {
+				jww.ERROR.Printf("svType != tvType; key=%s, st=%v, tt=%v, sv=%v, tv=%v", sk, svType, tvType, sv, tv)
+				continue
+			}
 			jww.TRACE.Printf("merging maps")
 			mergeMaps(sv.(map[string]interface{}), ttv, nil)
 		default:

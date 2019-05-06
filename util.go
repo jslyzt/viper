@@ -55,11 +55,13 @@ func copyAndInsensitiviseMap(m map[string]interface{}) map[string]interface{} {
 }
 
 func insensitiviseMap(m map[string]interface{}) {
+	var chgval bool
 	for key, val := range m {
+		chgval = false
 		switch val.(type) {
 		case map[interface{}]interface{}:
 			// nested map: cast and recursively insensitivise
-			val = cast.ToStringMap(val)
+			val, chgval = cast.ToStringMap(val), true
 			insensitiviseMap(val.(map[string]interface{}))
 		case map[string]interface{}:
 			// nested map: recursively insensitivise
@@ -72,7 +74,9 @@ func insensitiviseMap(m map[string]interface{}) {
 			delete(m, key)
 		}
 		// update map
-		m[lower] = val
+		if chgval == true {
+			m[lower] = val
+		}
 	}
 }
 
