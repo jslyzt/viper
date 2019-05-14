@@ -1307,7 +1307,7 @@ func SetDefault(key string, value interface{}) {
 func (v *Viper) SetDefault(key string, value interface{}) {
 	// If alias passed in, then set the proper default
 	key = v.realKey(strings.ToLower(key))
-	value = toCaseInsensitiveValue(value)
+	value = ToCaseInsensitiveValue(value)
 
 	path := strings.Split(key, v.keyDelim)
 	lastKey := strings.ToLower(path[len(path)-1])
@@ -1329,7 +1329,7 @@ func Set(key string, value interface{}) {
 func (v *Viper) Set(key string, value interface{}) {
 	// If alias passed in, then set the proper override
 	key = v.realKey(strings.ToLower(key))
-	value = toCaseInsensitiveValue(value)
+	value = ToCaseInsensitiveValue(value)
 
 	path := strings.Split(key, v.keyDelim)
 	lastKey := strings.ToLower(path[len(path)-1])
@@ -1423,6 +1423,11 @@ func (v *Viper) MergeConfig(in io.Reader) error {
 	return v.MergeConfigMap(cfg)
 }
 
+// GetConfig 获取配置
+func (v *Viper) GetConfig() map[string]interface{} {
+	return v.config
+}
+
 // MergeConfigMap merges the configuration from the map given with an existing config. Note that the map given may be modified.
 func MergeConfigMap(cfg map[string]interface{}) error {
 	return v.MergeConfigMap(cfg)
@@ -1433,8 +1438,8 @@ func (v *Viper) MergeConfigMap(cfg map[string]interface{}) error {
 	if v.config == nil {
 		v.config = make(map[string]interface{})
 	}
-	insensitiviseMap(cfg)
-	mergeMaps(cfg, v.config, nil)
+	InsensitiviseMap(cfg)
+	MergeMaps(cfg, v.config, nil)
 	return nil
 }
 
@@ -1583,7 +1588,7 @@ func (v *Viper) UnmarshalReader(in io.Reader, c map[string]interface{}) error {
 		}
 	}
 
-	insensitiviseMap(c)
+	InsensitiviseMap(c)
 	return nil
 }
 
@@ -1685,12 +1690,12 @@ func castMapFlagToMapInterface(src map[string]FlagValue) map[string]interface{} 
 	return tgt
 }
 
-// mergeMaps merges two maps. The `itgt` parameter is for handling go-yaml's
+// MergeMaps merges two maps. The `itgt` parameter is for handling go-yaml's
 // insistence on parsing nested structures as `map[interface{}]interface{}`
 // instead of using a `string` as the key for nest structures beyond one level
 // deep. Both map types are supported as there is a go-yaml fork that uses
 // `map[string]interface{}` instead.
-func mergeMaps(
+func MergeMaps(
 	src, tgt map[string]interface{}, itgt map[interface{}]interface{}) {
 	for sk, sv := range src {
 		tk := keyExists(sk, tgt)
@@ -1729,14 +1734,14 @@ func mergeMaps(
 			tsv := sv.(map[interface{}]interface{})
 			ssv := castToMapStringInterface(tsv)
 			stv := castToMapStringInterface(ttv)
-			mergeMaps(ssv, stv, ttv)
+			MergeMaps(ssv, stv, ttv)
 		case map[string]interface{}:
 			if svType != tvType {
 				jww.ERROR.Printf("svType != tvType; key=%s, st=%v, tt=%v, sv=%v, tv=%v", sk, svType, tvType, sv, tv)
 				continue
 			}
 			jww.TRACE.Printf("merging maps")
-			mergeMaps(sv.(map[string]interface{}), ttv, nil)
+			MergeMaps(sv.(map[string]interface{}), ttv, nil)
 		default:
 			jww.TRACE.Printf("setting value")
 			tgt[tk] = sv

@@ -23,30 +23,30 @@ func (pe ConfigParseError) Error() string {
 	return fmt.Sprintf("While parsing config: %s", pe.err.Error())
 }
 
-// toCaseInsensitiveValue checks if the value is a  map;
+// ToCaseInsensitiveValue checks if the value is a  map;
 // if so, create a copy and lower-case the keys recursively.
-func toCaseInsensitiveValue(value interface{}) interface{} {
+func ToCaseInsensitiveValue(value interface{}) interface{} {
 	switch v := value.(type) {
 	case map[interface{}]interface{}:
-		value = copyAndInsensitiviseMap(cast.ToStringMap(v))
+		value = CopyAndInsensitiviseMap(cast.ToStringMap(v))
 	case map[string]interface{}:
-		value = copyAndInsensitiviseMap(v)
+		value = CopyAndInsensitiviseMap(v)
 	}
 	return value
 }
 
-// copyAndInsensitiviseMap behaves like insensitiviseMap, but creates a copy of
+// CopyAndInsensitiviseMap behaves like InsensitiviseMap, but creates a copy of
 // any map it makes case insensitive.
-func copyAndInsensitiviseMap(m map[string]interface{}) map[string]interface{} {
+func CopyAndInsensitiviseMap(m map[string]interface{}) map[string]interface{} {
 	nm := make(map[string]interface{})
 
 	for key, val := range m {
 		lkey := strings.ToLower(key)
 		switch v := val.(type) {
 		case map[interface{}]interface{}:
-			nm[lkey] = copyAndInsensitiviseMap(cast.ToStringMap(v))
+			nm[lkey] = CopyAndInsensitiviseMap(cast.ToStringMap(v))
 		case map[string]interface{}:
-			nm[lkey] = copyAndInsensitiviseMap(v)
+			nm[lkey] = CopyAndInsensitiviseMap(v)
 		default:
 			nm[lkey] = v
 		}
@@ -54,7 +54,8 @@ func copyAndInsensitiviseMap(m map[string]interface{}) map[string]interface{} {
 	return nm
 }
 
-func insensitiviseMap(m map[string]interface{}) {
+// InsensitiviseMap 调整map
+func InsensitiviseMap(m map[string]interface{}) {
 	var chgval bool
 	for key, val := range m {
 		chgval = false
@@ -62,10 +63,10 @@ func insensitiviseMap(m map[string]interface{}) {
 		case map[interface{}]interface{}:
 			// nested map: cast and recursively insensitivise
 			val, chgval = cast.ToStringMap(val), true
-			insensitiviseMap(val.(map[string]interface{}))
+			InsensitiviseMap(val.(map[string]interface{}))
 		case map[string]interface{}:
 			// nested map: recursively insensitivise
-			insensitiviseMap(val.(map[string]interface{}))
+			InsensitiviseMap(val.(map[string]interface{}))
 		}
 
 		lower := strings.ToLower(key)
