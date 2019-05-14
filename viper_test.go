@@ -118,27 +118,27 @@ func initConfigs() {
 	var r io.Reader
 	SetConfigType("yaml")
 	r = bytes.NewReader(yamlExample)
-	unmarshalReader(r, v.config)
+	UnmarshalReader(r, v.config)
 
 	SetConfigType("json")
 	r = bytes.NewReader(jsonExample)
-	unmarshalReader(r, v.config)
+	UnmarshalReader(r, v.config)
 
 	SetConfigType("hcl")
 	r = bytes.NewReader(hclExample)
-	unmarshalReader(r, v.config)
+	UnmarshalReader(r, v.config)
 
 	SetConfigType("properties")
 	r = bytes.NewReader(propertiesExample)
-	unmarshalReader(r, v.config)
+	UnmarshalReader(r, v.config)
 
 	SetConfigType("toml")
 	r = bytes.NewReader(tomlExample)
-	unmarshalReader(r, v.config)
+	UnmarshalReader(r, v.config)
 
 	SetConfigType("json")
 	remote := bytes.NewReader(remoteExample)
-	unmarshalReader(remote, v.kvstore)
+	UnmarshalReader(remote, v.kvstore)
 }
 
 func initConfig(typ, config string) {
@@ -146,7 +146,7 @@ func initConfig(typ, config string) {
 	SetConfigType(typ)
 	r := strings.NewReader(config)
 
-	if err := unmarshalReader(r, v.config); err != nil {
+	if err := UnmarshalReader(r, v.config); err != nil {
 		panic(err)
 	}
 }
@@ -160,7 +160,7 @@ func initJSON() {
 	SetConfigType("json")
 	r := bytes.NewReader(jsonExample)
 
-	unmarshalReader(r, v.config)
+	UnmarshalReader(r, v.config)
 }
 
 func initProperties() {
@@ -168,7 +168,7 @@ func initProperties() {
 	SetConfigType("properties")
 	r := bytes.NewReader(propertiesExample)
 
-	unmarshalReader(r, v.config)
+	UnmarshalReader(r, v.config)
 }
 
 func initTOML() {
@@ -176,7 +176,7 @@ func initTOML() {
 	SetConfigType("toml")
 	r := bytes.NewReader(tomlExample)
 
-	unmarshalReader(r, v.config)
+	UnmarshalReader(r, v.config)
 }
 
 func initHcl() {
@@ -184,7 +184,7 @@ func initHcl() {
 	SetConfigType("hcl")
 	r := bytes.NewReader(hclExample)
 
-	unmarshalReader(r, v.config)
+	UnmarshalReader(r, v.config)
 }
 
 // make directories for testing
@@ -274,7 +274,7 @@ func TestUnmarshaling(t *testing.T) {
 	SetConfigType("yaml")
 	r := bytes.NewReader(yamlExample)
 
-	unmarshalReader(r, v.config)
+	UnmarshalReader(r, v.config)
 	assert.True(t, InConfig("name"))
 	assert.False(t, InConfig("state"))
 	assert.Equal(t, "steve", Get("name"))
@@ -358,7 +358,7 @@ func TestRemotePrecedence(t *testing.T) {
 
 	remote := bytes.NewReader(remoteExample)
 	assert.Equal(t, "0001", Get("id"))
-	unmarshalReader(remote, v.kvstore)
+	UnmarshalReader(remote, v.kvstore)
 	assert.Equal(t, "0001", Get("id"))
 	assert.NotEqual(t, "cronut", Get("type"))
 	assert.Equal(t, "remote", Get("newkey"))
@@ -1350,7 +1350,7 @@ func TestDotParameter(t *testing.T) {
 	initJSON()
 	// shoud take precedence over batters defined in jsonExample
 	r := bytes.NewReader([]byte(`{ "batters.batter": [ { "type": "Small" } ] }`))
-	unmarshalReader(r, v.config)
+	UnmarshalReader(r, v.config)
 
 	actual := Get("batters.batter")
 	expected := []interface{}{map[string]interface{}{"type": "Small"}}

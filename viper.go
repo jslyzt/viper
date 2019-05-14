@@ -1364,7 +1364,7 @@ func (v *Viper) ReadInConfig() error {
 
 	config := make(map[string]interface{})
 
-	err = v.unmarshalReader(bytes.NewReader(file), config)
+	err = v.UnmarshalReader(bytes.NewReader(file), config)
 	if err != nil {
 		return err
 	}
@@ -1406,7 +1406,7 @@ func ReadConfig(in io.Reader) error {
 // ReadConfig will read a configuration file
 func (v *Viper) ReadConfig(in io.Reader) error {
 	v.config = make(map[string]interface{})
-	return v.unmarshalReader(in, v.config)
+	return v.UnmarshalReader(in, v.config)
 }
 
 // MergeConfig merges a new configuration with an existing config.
@@ -1417,7 +1417,7 @@ func MergeConfig(in io.Reader) error {
 // MergeConfig merges a new configuration with an existing config
 func (v *Viper) MergeConfig(in io.Reader) error {
 	cfg := make(map[string]interface{})
-	if err := v.unmarshalReader(in, cfg); err != nil {
+	if err := v.UnmarshalReader(in, cfg); err != nil {
 		return err
 	}
 	return v.MergeConfigMap(cfg)
@@ -1530,12 +1530,13 @@ func (v *Viper) writeConfig(filename string, force bool) error {
 	return v.marshalWriter(f, configType)
 }
 
-// Unmarshal a Reader into a map. should probably be an unexported function.
-func unmarshalReader(in io.Reader, c map[string]interface{}) error {
-	return v.unmarshalReader(in, c)
+// UnmarshalReader a Reader into a map. should probably be an unexported function.
+func UnmarshalReader(in io.Reader, c map[string]interface{}) error {
+	return v.UnmarshalReader(in, c)
 }
 
-func (v *Viper) unmarshalReader(in io.Reader, c map[string]interface{}) error {
+// UnmarshalReader 解码
+func (v *Viper) UnmarshalReader(in io.Reader, c map[string]interface{}) error {
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(in)
 
@@ -1794,7 +1795,7 @@ func (v *Viper) getRemoteConfig(provider RemoteProvider) (map[string]interface{}
 	if err != nil {
 		return nil, err
 	}
-	err = v.unmarshalReader(reader, v.kvstore)
+	err = v.UnmarshalReader(reader, v.kvstore)
 	return v.kvstore, err
 }
 
@@ -1807,7 +1808,7 @@ func (v *Viper) watchKeyValueConfigOnChannel() error {
 			for {
 				b := <-rc
 				reader := bytes.NewReader(b.Value)
-				v.unmarshalReader(reader, v.kvstore)
+				v.UnmarshalReader(reader, v.kvstore)
 			}
 		}(respc)
 		return nil
@@ -1833,7 +1834,7 @@ func (v *Viper) watchRemoteConfig(provider RemoteProvider) (map[string]interface
 	if err != nil {
 		return nil, err
 	}
-	err = v.unmarshalReader(reader, v.kvstore)
+	err = v.UnmarshalReader(reader, v.kvstore)
 	return v.kvstore, err
 }
 
