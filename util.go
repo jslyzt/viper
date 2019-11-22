@@ -9,7 +9,7 @@ import (
 	"unicode"
 
 	"github.com/spf13/afero"
-	"github.com/spf13/cast"
+	"github.com/jslyzt/cast"
 	jww "github.com/spf13/jwalterweatherman"
 )
 

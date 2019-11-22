@@ -23,7 +23,7 @@ import (
 	"github.com/mitchellh/mapstructure"
 	toml "github.com/pelletier/go-toml"
 	"github.com/spf13/afero"
-	"github.com/spf13/cast"
+	"github.com/jslyzt/cast"
 	jww "github.com/spf13/jwalterweatherman"
 	"github.com/spf13/pflag"
 )

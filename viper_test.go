@@ -1,8 +1,3 @@
-// Copyright © 2014 Steve Francia <spf@spf13.com>.
-//
-// Use of this source code is governed by an MIT-style
-// license that can be found in the LICENSE file.
-
 package viper
 
 import (
@@ -25,7 +20,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/afero"
-	"github.com/spf13/cast"
+	"github.com/jslyzt/cast"
 
 	"github.com/spf13/pflag"
 	"github.com/stretchr/testify/assert"
